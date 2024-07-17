@@ -1182,8 +1182,6 @@ First we modify the `sse_sir_g` function again to fix $S_0$ and $I_0$ (or both)
 
 ```{r}
 #| code-fold: true
-#| echo: false
-#| eval: false
 # fix S0
 sse_sir_S0 <- function(params, data){
     # Convert biweekly time series into annual time scale
@@ -1347,8 +1345,6 @@ First, for S0 fixed:
 
 ```{r}
 #| code-fold: true
-#| echo: false
-#| eval: false
 sse_optim_params_S0 <- c(beta = log(0.055), gamma = log(365/14), I_init = log(1))
 
 # Create a dataframe of optimized parameters
@@ -1373,8 +1369,6 @@ Second, for I0 fixed:
 
 ```{r}
 #| code-fold: true
-#| echo: false
-#| eval: false
 sse_optim_params_I0 <- c(beta = log(0.055), gamma = log(365/14), S_init = log(5000))
 
 # Create a dataframe of optimized parameters
@@ -1399,8 +1393,6 @@ Third, for fixing both S0 and I0:
 
 ```{r}
 #| code-fold: true
-#| echo: false
-#| eval: false
 sse_optim_params_S0_I0 <- c(beta = log(0.055), gamma = log(365/14))
 
 # Create a dataframe of optimized parameters
@@ -1424,6 +1416,7 @@ niamey_optims_S0_I0 <- niamey_df %>%
 Now let's print the estimated parameter values to see if they make sense.
 
 ```{r}
+#| code-fold: true
 niamey_optims_S0 %>%
     select(-c(data, fit)) %>%
     mutate(

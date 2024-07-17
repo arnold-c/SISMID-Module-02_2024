@@ -973,6 +973,37 @@ niamey_optims_g %>%
     cols_align("center")
 ```
 
+::: {.callout-important}
+It is always worth performing a sanity check on the best fit predictions.
+For example, as we have now estimated gamma (the recovery rate), which has a natural interpretation as the inverse of the duration of infection, we can see if the predicted values make sense.
+Does it make sense that `gamma` is different in each site?
+
+Converting the values to duration of infection values, we get the following results:
+
+```{r}
+niamey_optims_g %>%
+    select(site, gamma) %>%
+    mutate(site = str_replace_all(site, "_", " ")) %>%
+    mutate(dur_inf = 1 / gamma * 365) %>%
+    gt() %>%
+    fmt_number(columns = -site, decimals = 3) %>%
+    # Relabel the column headers
+    cols_label(
+        site = md("**Site**"),
+        gamma = md("**Gamma**"),
+        dur_inf = md("**Duration of infection (days)**")
+    ) %>%
+    # Apply style to the table with gray alternating rows
+    opt_stylize(style = 1, color = 'gray') %>%
+    # Increate space between columns
+    opt_horizontal_padding(scale = 3) %>%
+    cols_align("center")
+```
+
+Does it make sense that the duration of infection is only 1-5 days?
+In situations like this, it would make sense to put constraints on the parameter space that is being optimized over, but that is beyond the scope of this tutorial.
+:::
+
 Getting new predictions from the optimized parameters and a new model run for each site.
 
 ```{r}

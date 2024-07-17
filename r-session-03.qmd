@@ -1174,11 +1174,11 @@ lines(mod.pred.g3$Y~subset(niamey,site==3)[,1])
 
 ### Exercise 6
 
-What happens if one or both of the other unknowns ($X_0$ and $Y_0$) is fixed instead of $\gamma$?
+What happens if one or both of the other unknowns ($S_0$ and $I_0$) is fixed instead of $\gamma$?
 
 #### Solutions coming soon!
 
-First we modify the `sse_sir_g` function again to fix $X_0$ and $Y_0$ (or both)
+First we modify the `sse_sir_g` function again to fix $S_0$ and $I_0$ (or both)
 
 ```{r}
 #| code-fold: true

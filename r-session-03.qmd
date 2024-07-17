@@ -1204,7 +1204,7 @@ sse_sir_S0 <- function(params, data){
 
     in_parms <- c("beta" = beta, "gamma" = gamma)
     # Unpack the initial states and exponentiate to fit on normal scale
-    S_init <- exp(12500)          #initial susceptibles (FIXED)
+    S_init <- 6000          #initial susceptibles (FIXED)
     I_init <- exp(params[["I_init"]])
 
     # Fit SIR model to the parameters
@@ -1257,7 +1257,7 @@ sse_sir_I0 <- function(params, data){
     in_parms <- c("beta" = beta, "gamma" = gamma)
     # Unpack the initial states and exponentiate to fit on normal scale
     S_init <- exp(params[["S_init"]])
-    I_init <- exp(1000) # initial infecteds (FIXED)
+    I_init <- 1 # initial infecteds (FIXED)
 
     # Fit SIR model to the parameters
     sol <- deSolve::ode(
@@ -1308,8 +1308,8 @@ sse_sir_S0_I0 <- function(params, data){
 
     in_parms <- c("beta" = beta, "gamma" = gamma)
     # Unpack the initial states and exponentiate to fit on normal scale
-    S_init <- exp(12500)    # initial susceptibles (FIXED)
-    I_init <- exp(1000) # initial infecteds (FIXED)
+    S_init <- 6000    # initial susceptibles (FIXED)
+    I_init <- 1 # initial infecteds (FIXED)
 
     # Fit SIR model to the parameters
     sol <- deSolve::ode(

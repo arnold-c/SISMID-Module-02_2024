@@ -1375,7 +1375,7 @@ Second, for I0 fixed:
 #| code-fold: true
 #| echo: false
 #| eval: false
-sse_optim_params_I0 <- c(beta = log(0.055), gamma = log(365/14), S_init = log(5000), I_init = log(1))
+sse_optim_params_I0 <- c(beta = log(0.055), gamma = log(365/14), S_init = log(5000))
 
 # Create a dataframe of optimized parameters
 niamey_optims_I0 <- niamey_df %>%
@@ -1401,7 +1401,7 @@ Third, for fixing both S0 and I0:
 #| code-fold: true
 #| echo: false
 #| eval: false
-sse_optim_params_S0_I0 <- c(beta = log(0.055), gamma = log(365/14), S_init = log(5000), I_init = log(1))
+sse_optim_params_S0_I0 <- c(beta = log(0.055), gamma = log(365/14))
 
 # Create a dataframe of optimized parameters
 niamey_optims_S0_I0 <- niamey_df %>%

@@ -1209,7 +1209,7 @@ sse_sir_S0 <- function(params, data){
 
     # Fit SIR model to the parameters
     sol <- deSolve::ode(
-            y = c(I = I_init, new_inf = 0),
+            y = c(S = S_init, I = I_init, new_inf = 0),
             times = t,
             func = closed_sir_model_g,
             parms = in_parms,

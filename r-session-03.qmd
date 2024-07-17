@@ -5,12 +5,12 @@ abstract: |
     *Materials adapted from John Drake and Pej Rohani [@drakeEstimation2019]*
 execute:
     warning: false
-metadata-files: 
+metadata-files:
     - metadata/matthewferrari.yml
     - metadata/deepitbhatia.yml
     - metadata/mathjax-packages.yml
-editor: 
-  markdown: 
+editor:
+  markdown:
     wrap: sentence
 ---
 
@@ -177,7 +177,7 @@ To demonstrate least squares fitting, we consider an outbreak of measles in Niam
 
 ```{r}
 # Replace an "NA"
-niamey[5, 3] <- 0 
+niamey[5, 3] <- 0
 
 niamey_df <- niamey %>%
     # Rename columns to remove automatic "V1" etc columns names
@@ -216,7 +216,7 @@ ggplot(
         values = niamey_site_colors,
         aesthetics = c("color", "fill"),
         labels = niamey_site_labels
-    ) + 
+    ) +
     guides(color = "none") +
     labs(x = "Biweek", y = "Number of Cases", fill = "Site Number") +
     theme(legend.position = "bottom")
@@ -241,7 +241,7 @@ First, we write a specialized function for simulating the SIR model in a case wh
 #' sir_params <- 0.0005
 #' sir_init_states <- c(S = 5000, I = 1, R = 0)
 #' sim_times <- seq(0, 16 / 365, by = 0.1 / 365)
-#' 
+#'
 #' sir_sol <- deSolve::ode(
 #'    y = sir_init_states,
 #'    times = sim_times,
@@ -252,7 +252,7 @@ closed_sir_model <- function (time, state , params, ...) {
     # Unpack states
     S <- state["S"]
     I <- state["I"]
-    
+
     # Unpack parameters
     beta <- params
     dur_inf <- 14 / 365
@@ -500,12 +500,12 @@ In general, this is called the **objective function** because it is the quantity
 #' @examples
 sse_sir <- function(params, data){
     # Convert biweekly time series into annual time scale
-    # Daily time scale has requires beta values to be too small - doesn't 
+    # Daily time scale has requires beta values to be too small - doesn't
     # optimize well
     dt <- 0.01
     max_biweek <- max(data$biweek)
     t <- seq(0, max_biweek * 14, dt) / 365
-    
+
     # Extract the number of observed incidence
     obs_inc <- data$cases
 
@@ -517,7 +517,7 @@ sse_sir <- function(params, data){
     # Unpack the initial states and exponentiate to fit on normal scale
     S_init <- exp(params[["S_init"]])
     I_init <- exp(params[["I_init"]])
-    
+
     # Fit SIR model to the parameters
     sol <- deSolve::ode(
             y = c(S = S_init, I = I_init, new_inf = 0),
@@ -527,7 +527,7 @@ sse_sir <- function(params, data){
             # Use rk4 as fixed time steps, which is important for indexing
             method = "rk4"
         )
-    
+
     # Extract the cumulative incidence
     cum_inc <- sol[, "new_inf"]
 
@@ -590,7 +590,7 @@ niamey_optims %>%
     fmt_scientific(columns = beta, decimals = 3) %>%
     # Relabel the column headers
     cols_label(
-        site = md("**Site**"), 
+        site = md("**Site**"),
         beta = md("**Beta**"),
         S_init = md("**Initial S**"),
         I_init = md("**Initial I**")
@@ -819,7 +819,7 @@ plot(R0, se, ylab='Standard error')
 
 ### Exercise 5
 
-First, let's add in $\gamma$ estimation into the `sse.sir` function and create a new `sse.sir` function called `sse.sir.g`
+First, let's add in $\gamma$ estimation into the `sse_sir` function and create a new `sse_sir` function called `sse_sir_g`
 
 ```{r}
 #' Basic SIR model
@@ -836,7 +836,7 @@ First, let's add in $\gamma$ estimation into the `sse.sir` function and create a
 #' sir_params <- 0.0005
 #' sir_init_states <- c(S = 5000, I = 1, R = 0)
 #' sim_times <- seq(0, 16 / 365, by = 0.1 / 365)
-#' 
+#'
 #' sir_sol <- deSolve::ode(
 #'    y = sir_init_states,
 #'    times = sim_times,
@@ -849,10 +849,9 @@ closed_sir_model_g <- function (time, state , params, ...) {
     # Unpack states
     S <- state["S"]
     I <- state["I"]
-    
+
     # Unpack parameters
     beta <- params[["beta"]]
-    dur_inf <- 14 / 365
     gamma <- params[["gamma"]]
 
     new_inf <- beta * S * I
@@ -863,7 +862,7 @@ closed_sir_model_g <- function (time, state , params, ...) {
 
     # Return the ODEs
     return(list(c(dSdt, dIdt, new_inf)))
-} 
+}
 
 
 #' Calculate the Sum of Squared Errors
@@ -878,12 +877,12 @@ closed_sir_model_g <- function (time, state , params, ...) {
 #' @examples
 sse_sir_g <- function(params, data){
     # Convert biweekly time series into annual time scale
-    # Daily time scale has requires beta values to be too small - doesn't 
+    # Daily time scale has requires beta values to be too small - doesn't
     # optimize well
     dt <- 0.01
     max_biweek <- max(data$biweek)
     t <- seq(0, max_biweek * 14, dt) / 365
-    
+
     # Extract the number of observed incidence
     obs_inc <- data$cases
 
@@ -892,12 +891,12 @@ sse_sir_g <- function(params, data){
     # Unpack the transmission parameter and exponentiate to fit on ln scale
     beta <- exp(params[["beta"]])
     gamma <- exp(params[["gamma"]])
-    
+
     in_parms <- c("beta" = beta, "gamma" = gamma)
     # Unpack the initial states and exponentiate to fit on normal scale
     S_init <- exp(params[["S_init"]])
     I_init <- exp(params[["I_init"]])
-    
+
     # Fit SIR model to the parameters
     sol <- deSolve::ode(
             y = c(S = S_init, I = I_init, new_inf = 0),
@@ -907,7 +906,7 @@ sse_sir_g <- function(params, data){
             # Use rk4 as fixed time steps, which is important for indexing
             method = "rk4"
         )
-    
+
     # Extract the cumulative incidence
     cum_inc <- sol[, "new_inf"]
 
@@ -961,7 +960,7 @@ niamey_optims_g %>%
     fmt_scientific(columns = beta, decimals = 3) %>%
     # Relabel the column headers
     cols_label(
-        site = md("**Site**"), 
+        site = md("**Site**"),
         beta = md("**Beta**"),
         gamma = md("**Gamma**"),
         S_init = md("**Initial S**"),
@@ -991,7 +990,7 @@ niamey_predictions_g <- niamey_optims_g %>%
             ),
             .f = function(S_init, I_init, beta, gamma, time_data)  {
                 site_times <- time_data$biweek * 14 / 365
-  
+
                 in_parms <- c("beta" = beta, "gamma" = gamma)
                 # Return a dataframe of model solutions
                 as_tibble(ode(
@@ -1093,7 +1092,7 @@ sse.sir.g <- function(params0,data,site){  #function to calculate squared errors
   cases <- data[,3]               #number of cases
   beta <- exp(params0[1])            #parameter beta
   X0 <- exp(params0[2])           #initial susceptibles
-  Y0 <- exp(params0[3])           #initial infected        
+  Y0 <- exp(params0[3])           #initial infected
   gamma <- exp(params0[4])        #initial gamma
   out <- as.data.frame(ode(c(X=X0,Y=Y0),times=t,closed.sir.model.g,c(beta, gamma), hmax=1/120))
   sum((out$Y-cases)^2)       #sum of squared errors that is returned to the optim function
@@ -1157,12 +1156,12 @@ First we modify the `sse_sir_g` function again to fix $X_0$ and $Y_0$ (or both)
 # fix S0
 sse_sir_S0 <- function(params, data){
     # Convert biweekly time series into annual time scale
-    # Daily time scale has requires beta values to be too small - doesn't 
+    # Daily time scale has requires beta values to be too small - doesn't
     # optimize well
     dt <- 0.01
     max_biweek <- max(data$biweek)
     t <- seq(0, max_biweek * 14, dt) / 365
-    
+
     # Extract the number of observed incidence
     obs_inc <- data$cases
 
@@ -1171,12 +1170,12 @@ sse_sir_S0 <- function(params, data){
     # Unpack the transmission parameter and exponentiate to fit on ln scale
     beta <- exp(params[["beta"]])
     gamma <- exp(params[["gamma"]])
-    
+
     in_parms <- c("beta" = beta, "gamma" = gamma)
     # Unpack the initial states and exponentiate to fit on normal scale
     S_init <- exp(12500)          #initial susceptibles (FIXED)
     I_init <- exp(params[["I_init"]])
-    
+
     # Fit SIR model to the parameters
     sol <- deSolve::ode(
             y = c(I = I_init, new_inf = 0),
@@ -1186,7 +1185,7 @@ sse_sir_S0 <- function(params, data){
             # Use rk4 as fixed time steps, which is important for indexing
             method = "rk4"
         )
-    
+
     # Extract the cumulative incidence
     cum_inc <- sol[, "new_inf"]
 
@@ -1209,12 +1208,12 @@ sse_sir_S0 <- function(params, data){
 #fix I0
 sse_sir_I0 <- function(params, data){
     # Convert biweekly time series into annual time scale
-    # Daily time scale has requires beta values to be too small - doesn't 
+    # Daily time scale has requires beta values to be too small - doesn't
     # optimize well
     dt <- 0.01
     max_biweek <- max(data$biweek)
     t <- seq(0, max_biweek * 14, dt) / 365
-    
+
     # Extract the number of observed incidence
     obs_inc <- data$cases
 
@@ -1223,12 +1222,12 @@ sse_sir_I0 <- function(params, data){
     # Unpack the transmission parameter and exponentiate to fit on ln scale
     beta <- exp(params[["beta"]])
     gamma <- exp(params[["gamma"]])
-    
+
     in_parms <- c("beta" = beta, "gamma" = gamma)
     # Unpack the initial states and exponentiate to fit on normal scale
-    S_init <- exp(params[["S_init"]])         
+    S_init <- exp(params[["S_init"]])
     I_init <- exp(1000) # initial infecteds (FIXED)
-    
+
     # Fit SIR model to the parameters
     sol <- deSolve::ode(
             y = c(S = S_init, I = I_init, new_inf = 0),
@@ -1238,7 +1237,7 @@ sse_sir_I0 <- function(params, data){
             # Use rk4 as fixed time steps, which is important for indexing
             method = "rk4"
         )
-    
+
     # Extract the cumulative incidence
     cum_inc <- sol[, "new_inf"]
 
@@ -1261,12 +1260,12 @@ sse_sir_I0 <- function(params, data){
 # fix S0 and I0
 sse_sir_S0_I0 <- function(params, data){
     # Convert biweekly time series into annual time scale
-    # Daily time scale has requires beta values to be too small - doesn't 
+    # Daily time scale has requires beta values to be too small - doesn't
     # optimize well
     dt <- 0.01
     max_biweek <- max(data$biweek)
     t <- seq(0, max_biweek * 14, dt) / 365
-    
+
     # Extract the number of observed incidence
     obs_inc <- data$cases
 
@@ -1275,12 +1274,12 @@ sse_sir_S0_I0 <- function(params, data){
     # Unpack the transmission parameter and exponentiate to fit on ln scale
     beta <- exp(params[["beta"]])
     gamma <- exp(params[["gamma"]])
-    
+
     in_parms <- c("beta" = beta, "gamma" = gamma)
     # Unpack the initial states and exponentiate to fit on normal scale
-    S_init <- exp(12500)    # initial susceptibles (FIXED)     
+    S_init <- exp(12500)    # initial susceptibles (FIXED)
     I_init <- exp(1000) # initial infecteds (FIXED)
-    
+
     # Fit SIR model to the parameters
     sol <- deSolve::ode(
             y = c(S = S_init, I = I_init, new_inf = 0),
@@ -1290,7 +1289,7 @@ sse_sir_S0_I0 <- function(params, data){
             # Use rk4 as fixed time steps, which is important for indexing
             method = "rk4"
         )
-    
+
     # Extract the cumulative incidence
     cum_inc <- sol[, "new_inf"]
 
@@ -1401,8 +1400,8 @@ sse.sir.x0 <- function(params0,data,site){  #function to calculate squared error
   cases <- data[,3]               #number of cases
   beta <- exp(params0[1])            #parameter beta
   X0 <- 12500          #initial susceptibles (FIXED)
-  Y0 <- exp(params0[2])           #initial infected   
-  gamma <- exp(params0[3])      
+  Y0 <- exp(params0[2])           #initial infected
+  gamma <- exp(params0[3])
   out <- as.data.frame(ode(c(X=X0, Y=Y0),times=t,closed.sir.model.g,c(beta, gamma),hmax=1/120))
   sum((out$Y-cases)^2)       #sum of squared errors that is returned to the optim function
 }
@@ -1414,8 +1413,8 @@ sse.sir.y0 <- function(params0,data,site){  #function to calculate squared error
   cases <- data[,3]               #number of cases
   beta <- exp(params0[1])            #parameter beta
   X0 <- exp(params0[2])          #initial susceptibles (FIXED)
-  Y0 <- 1000         #initial infected   
-  gamma <- exp(params0[3])      
+  Y0 <- 1000         #initial infected
+  gamma <- exp(params0[3])
   out <- as.data.frame(ode(c(X=X0,Y=Y0),times=t,closed.sir.model.g,c(beta, gamma),hmax=1/120))
   sum((out$Y-cases)^2)       #sum of squared errors that is returned to the optim function
 }
@@ -1429,7 +1428,7 @@ sse.sir.x0y0 <- function(params0,data,site){  #function to calculate squared err
   beta <- exp(params0[1])            #parameter beta
   X0 <- 12500          #initial susceptibles (FIXED)
   Y0 <- 1000          #initial infected (FIXED)
-  gamma <- exp(params0[2])      
+  gamma <- exp(params0[2])
   out <- as.data.frame(ode(c(X=X0,Y=Y0),times=t,closed.sir.model.g,c(beta, gamma),hmax=1/120))
   sum((out$Y-cases)^2)       #sum of squared errors that is returned to the optim function
 }

@@ -1046,7 +1046,7 @@ Finally we can plot:
 
 ```{r}
 # Create a dataframe to store the positions of the text labels
-niamey_preds_labels <- tibble(
+niamey_preds_labels_g <- tibble(
     site = c("Site_1", "Site_2"),
     x_label = c(6.5, 6.5),
     x_arrow_just = c(-0.5, -0.5),
@@ -1075,7 +1075,7 @@ ggplot(niamey_predictions_g, aes(x = biweek, group = site)) +
     labs(x = "Biweek", y = "Number of Case") +
     theme(legend.position = "none") +
     ggtext::geom_textbox(
-        data = niamey_preds_labels,
+        data = niamey_preds_labels_g,
         aes(
             label = paste0(
                 "<span style = \"color:",
@@ -1090,7 +1090,7 @@ ggplot(niamey_predictions_g, aes(x = biweek, group = site)) +
         size = 4, fill = NA, box.colour = NA
     ) +
     geom_curve(
-        data = niamey_preds_labels,
+        data = niamey_preds_labels_g,
         aes(
             x = x_label + x_arrow_just, xend = x_arrow_end,
             y = y_label + y_arrow_just, yend = y_arrow_end

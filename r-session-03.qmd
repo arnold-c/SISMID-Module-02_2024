@@ -1421,6 +1421,78 @@ niamey_optims_S0_I0 <- niamey_df %>%
 
 ```
 
+Now let's print the estimated parameter values to see if they make sense.
+
+```{r}
+niamey_optims_S0 %>%
+    select(-c(data, fit)) %>%
+    mutate(
+        site = str_replace_all(site, "_", " "),
+        dur_inf = 1 / gamma * 365
+    ) %>%
+    gt() %>%
+    fmt_number(columns = -site, decimals = 3) %>%
+    fmt_scientific(columns = beta, decimals = 3) %>%
+    # Relabel the column headers
+    cols_label(
+        site = md("**Site**"),
+        beta = md("**Beta**"),
+        gamma = md("**Gamma**"),
+        dur_inf = md("**Duration of infection (days)**"),
+        I_init = md("**Initial I**")
+    ) %>%
+    # Apply style to the table with gray alternating rows
+    opt_stylize(style = 1, color = 'gray') %>%
+    # Increate space between columns
+    opt_horizontal_padding(scale = 3) %>%
+    cols_align("center")
+
+niamey_optims_I0 %>%
+    select(-c(data, fit)) %>%
+    mutate(
+        site = str_replace_all(site, "_", " "),
+        dur_inf = 1 / gamma * 365
+    ) %>%
+    gt() %>%
+    fmt_number(columns = -site, decimals = 3) %>%
+    fmt_scientific(columns = beta, decimals = 3) %>%
+    # Relabel the column headers
+    cols_label(
+        site = md("**Site**"),
+        beta = md("**Beta**"),
+        gamma = md("**Gamma**"),
+        dur_inf = md("**Duration of infection (days)**"),
+        S_init = md("**Initial S**")
+    ) %>%
+    # Apply style to the table with gray alternating rows
+    opt_stylize(style = 1, color = 'gray') %>%
+    # Increate space between columns
+    opt_horizontal_padding(scale = 3) %>%
+    cols_align("center")
+
+niamey_optims_S0_I0 %>%
+    select(-c(data, fit)) %>%
+    mutate(
+        site = str_replace_all(site, "_", " "),
+        dur_inf = 1 / gamma * 365
+    ) %>%
+    gt() %>%
+    fmt_number(columns = -site, decimals = 3) %>%
+    fmt_scientific(columns = beta, decimals = 3) %>%
+    # Relabel the column headers
+    cols_label(
+        site = md("**Site**"),
+        beta = md("**Beta**"),
+        gamma = md("**Gamma**"),
+        dur_inf = md("**Duration of infection (days)**"),
+    ) %>%
+    # Apply style to the table with gray alternating rows
+    opt_stylize(style = 1, color = 'gray') %>%
+    # Increate space between columns
+    opt_horizontal_padding(scale = 3) %>%
+    cols_align("center")
+```
+
 ```{r}
 #| code-fold: true
 #| echo: false

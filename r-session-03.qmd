@@ -714,7 +714,7 @@ ggplot(niamey_predictions, aes(x = biweek, group = site)) +
 :::
 
 To make things easier, we have assumed the infectious period is known to be 14 days.
-In terms of years, $\text{D} = \frac{14}{365} \approx 0.0384$, and the recovery rate is the inverse i.e., $\gamma = \frac{14}{365}$.
+In terms of years, $\text{D} = \frac{14}{365} \approx 0.0384$, and the recovery rate is the inverse i.e., $\gamma = \frac{365}{14}$.
 Now, modify the code above to estimate $\gamma$ and $\beta$ simultaneously.
 
 ::: exercise
